@@ -1,0 +1,12 @@
+
+
+objitem
+compitem
+defunitem
+constexpritem
+
+
+
+obj Foo<T> {
+    priv let _v: T;
+}

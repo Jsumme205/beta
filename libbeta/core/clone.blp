@@ -1,0 +1,46 @@
+
+
+
+pub trait Clone
+requires
+    This -> pack::markers::Sized
+{
+    pub defun Clone(&this) => This;
+
+    pub defun CloneFrom(&mut this, src: &This) => void {
+        *this => src.clone();
+    }
+}
+
+
+pub unsafe trait TrivialClone
+requires
+    This -> Clone
+{}
+
+
+pub unsafe trait ClonePtr
+requires
+    This -> Clone
+{
+    pub unsafe defun CloneFromAssumeSame(&mut this, src: &This) => void;
+}
+
+
+@defun ApplyCloneForCopy(@ty...:Ty) => ...Impl {
+    @(
+        extend @ty: Clone {
+            pub defun Clone(&this) => This {
+                *this
+            }
+        }
+    )...
+}
+
+@ApplyCloneForCopy(
+    uint8, uint16, uint32, uint64,
+    int8, int16, int32, int64,
+    usize, isize
+    bool,
+    char,
+);

@@ -4,3 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+allocator_api = { version = "0.1.0", path = "../allocator_api" }
+betac_token = { version = "0.1.0", path = "../betac_token" }
+betac_tokenizer = { version = "0.1.0", path = "../betac_tokenizer" }
+betac_yarn = { version = "0.1.0", path = "../betac_yarn" }
+update = { version = "0.1.0", path = "../update" }
+wyhash = "0.6.0"

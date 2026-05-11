@@ -1,0 +1,31 @@
+
+
+@Lang[item => "sized_trait"]
+pub trait Sized {}
+
+@Lang[item => "copy_trait"]
+pub trait Copy {}
+
+
+@Extender
+@Lang[item => "copy_extend"]
+pub @defun Copy[(@unconditional)? @item:Item] => Impl {
+    // compiler built-in
+}
+
+@Auto
+@Lang[item => "send_trait"]
+pub unsafe trait Send {}
+
+@Auto
+@Lang[item => "sync_trait"]
+pub unsafe trait Shared {}
+
+
+// NOTE: @unconditional attribute means that it writes code like this:
+// extend<T> OwningShim<T>: Copy {}
+// extend<T> OwningShim<T>: Clone { .. }
+
+@Extend[@unconditional Clone, @unconditional Copy]
+@Lang[item => "owning_shim"]
+pub component OwningShim<T> {}

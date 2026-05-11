@@ -1,0 +1,138 @@
+import pack::markers::Sized;
+import pack::markers::Copy;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr defun abortProc() => Never;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun unreachable() => Never;
+
+
+@Intrinsic
+@NoUnwind
+pub constexpr unsafe defun assume(cond: boolean) => Void {
+    if !cond {
+        unreachable();
+    }
+}
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr defun likely(cond: boolean) => boolean;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr defun unlikely(cond: boolean) => boolean;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun transmute<Src, Dst>(src: Src) => Dst
+requires
+    Src -> Sized,
+    Dst -> Sized;
+
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun transmuteUnchecked<Src, Dst>(src: Src) => Dst
+requires
+    Src -> Sized,
+    Dst -> Sized;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr defun hasDestructorGlue<T>() => boolean;
+
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun readFromPointer<T>(ptr: *unsafe T) => T
+requires
+    T -> Sized;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun writeToPtr<Src, T>(src: Src, dst: *unsafe mut T)
+requires
+    Src -> Sized;
+
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub unsafe defun catchUnwind<
+    TRY,
+    CATCH,
+>(tryFun: TRY, catchFun: CATCH, data: *unsafe uint8) => boolean
+requires
+    TRY -> Sized + CallOnce<*unsafe mut uint8, Output => Void>,
+    CATCH -> Sized + CallOnce<*unsafe mut uint8, *unsafe mut uint8, Output => Void>;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun blindMemcpy(src: *unsafe uint8, dest: *unsafe mut uint8, count: usize) => Void;
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr unsafe defun constEvalSelect<
+    ARG,
+    RUNTIME,
+    RET
+>(
+    arg: ARG,
+    constFn: const defun(ARG) => RET,
+    rtFn: RUNTIME,
+) => RET
+requires
+    RUNTIME -> Sized + CallOnce<ARG, Output => RET>,
+    ARG -> Sized,
+    RET -> Sized;
+
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr defun sizeOf<T>() => usize
+requires
+    T -> Sized;
+
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub constexpr defun alignOf<T>() => usize
+requires
+    T -> Sized;
+
+
+@Intrinsic
+@Lang[item => "atomic_ordering"]
+@Extend[Clone, Copy]
+pub enum AtomicOrdering {
+    pub case Acquire;
+    pub case Release;
+}
+
+
+@Intrinsic[atom]
+@NoUnwind
+pub defun loadAtom<
+    constexpr ORDER: AtomicOrdering,
+    T
+>(
+    addr: *unsafe mut T,
+) => T
+requires
+    T -> Sized;

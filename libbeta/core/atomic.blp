@@ -1,0 +1,27 @@
+import core::markers::Sized;
+import core::markers::Copy;
+
+
+@Extend[Clone, Copy]
+pub enum Ordering {
+    pub case Acquire;
+}
+
+
+@Sealed;
+pub unsafe trait AtomicType
+requires
+    This -> Sized + Copy,
+{
+
+    pub unsafe defun Load(
+        self: *unsafe mut This,
+        ordering: Ordering,
+    ) => This;
+
+    pub unsafe defun Store(
+        self: *unsafe mut This,
+        src: This,
+        ordering: Ordering,
+    );
+}
